@@ -54,9 +54,9 @@ class _FirstAidDetailScreenState extends State<FirstAidDetailScreen>
               loc.translate(widget.item.titleKey),
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
-            const Text(
-              'First Aid Instructions',
-              style: TextStyle(
+            Text(
+              loc.translate('fa_instructions'),
+              style: const TextStyle(
                 fontSize: 12,
                 color: Colors.grey,
                 fontWeight: FontWeight.normal,
@@ -97,15 +97,18 @@ class _FirstAidDetailScreenState extends State<FirstAidDetailScreen>
                 labelColor: Colors.black,
                 unselectedLabelColor: Colors.grey[600],
                 labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                tabs: const [
-                  Tab(text: 'Steps', icon: Icon(Icons.flash_on, size: 18)),
+                tabs: [
                   Tab(
-                    text: "Do & Don't",
-                    icon: Icon(Icons.info_outline, size: 18),
+                    text: loc.translate('tab_steps'),
+                    icon: const Icon(Icons.flash_on, size: 18),
                   ),
                   Tab(
-                    text: 'Tools',
-                    icon: Icon(Icons.medical_services_outlined, size: 18),
+                    text: loc.translate('tab_do_dont'),
+                    icon: const Icon(Icons.info_outline, size: 18),
+                  ),
+                  Tab(
+                    text: loc.translate('tab_tools'),
+                    icon: const Icon(Icons.medical_services_outlined, size: 18),
                   ),
                 ],
               ),
@@ -127,8 +130,9 @@ class _FirstAidDetailScreenState extends State<FirstAidDetailScreen>
   }
 
   Widget _buildStepsTab(LocalizationService loc) {
-    if (widget.item.steps.isEmpty)
-      return const Center(child: Text("No steps available."));
+    if (widget.item.steps.isEmpty) {
+      return Center(child: Text(loc.translate('no_steps')));
+    }
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: widget.item.steps.length,
@@ -191,7 +195,7 @@ class _FirstAidDetailScreenState extends State<FirstAidDetailScreen>
         children: [
           if (widget.item.dos.isNotEmpty) ...[
             _buildSectionCard(
-              title: 'Do This',
+              title: loc.translate('do_this'),
               icon: Icons.check,
               items: widget.item.dos,
               isPositive: true,
@@ -201,7 +205,7 @@ class _FirstAidDetailScreenState extends State<FirstAidDetailScreen>
           ],
           if (widget.item.donts.isNotEmpty)
             _buildSectionCard(
-              title: 'Avoid This',
+              title: loc.translate('avoid_this'),
               icon: Icons.close,
               items: widget.item.donts,
               isPositive: false,
@@ -281,8 +285,9 @@ class _FirstAidDetailScreenState extends State<FirstAidDetailScreen>
   }
 
   Widget _buildToolsTab(LocalizationService loc) {
-    if (widget.item.tools.isEmpty)
-      return const Center(child: Text("No specific tools required."));
+    if (widget.item.tools.isEmpty) {
+      return Center(child: Text(loc.translate('no_tools')));
+    }
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

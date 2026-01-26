@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../theme/app_colors.dart';
+import '../services/localization_service.dart';
 
 class ScaffoldWithNavBar extends StatelessWidget {
   const ScaffoldWithNavBar({required this.navigationShell, super.key});
@@ -10,6 +12,8 @@ class ScaffoldWithNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = Provider.of<LocalizationService>(context);
+
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: NavigationBar(
@@ -21,43 +25,49 @@ class ScaffoldWithNavBar extends StatelessWidget {
         shadowColor: Colors.black.withOpacity(0.1),
         elevation: 10,
         height: 70,
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(
+            icon: const Icon(Icons.home_outlined),
+            selectedIcon: const Icon(
               Icons.home_rounded,
               color: AppColors.primaryBlue,
             ),
-            label: 'Home',
+            label: loc.translate('home'),
           ),
           NavigationDestination(
-            icon: Icon(Icons.medical_services_outlined),
-            selectedIcon: Icon(
+            icon: const Icon(Icons.medical_services_outlined),
+            selectedIcon: const Icon(
               Icons.medical_services_rounded,
               color: AppColors.primaryBlue,
             ),
-            label: 'First Aid',
+            label: loc.translate('first_aid'),
           ),
           NavigationDestination(
-            icon: Icon(Icons.emergency_outlined, color: AppColors.emergencyRed),
-            selectedIcon: Icon(
+            icon: const Icon(
+              Icons.emergency_outlined,
+              color: AppColors.emergencyRed,
+            ),
+            selectedIcon: const Icon(
               Icons.emergency_rounded,
               color: AppColors.emergencyRed,
             ),
-            label: 'Emergency',
+            label: loc.translate('emergency'),
           ),
           NavigationDestination(
-            icon: Icon(Icons.notifications_outlined),
-            selectedIcon: Icon(
+            icon: const Icon(Icons.notifications_outlined),
+            selectedIcon: const Icon(
               Icons.notifications_rounded,
               color: AppColors.primaryBlue,
             ),
-            label: 'Reminders',
+            label: loc.translate('reminders_title'),
           ),
           NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person, color: AppColors.primaryBlue),
-            label: 'Profile',
+            icon: const Icon(Icons.person_outline),
+            selectedIcon: const Icon(
+              Icons.person,
+              color: AppColors.primaryBlue,
+            ),
+            label: loc.translate('profile'),
           ),
         ],
       ),

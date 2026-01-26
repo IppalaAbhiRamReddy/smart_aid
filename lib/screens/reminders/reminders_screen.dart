@@ -96,7 +96,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          "No reminders yet",
+                          loc.translate('no_reminders'),
                           style: AppTextStyles.bodyText.copyWith(
                             color: Colors.grey,
                           ),
@@ -230,7 +230,10 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 16),
                         child: Text(
-                          _getRepeatText(reminder.repeat),
+                          _getRepeatText(
+                            reminder.repeat,
+                            Provider.of<LocalizationService>(context),
+                          ),
                           style: const TextStyle(
                             fontSize: 14,
                             color: Color(0xFF94A3B8),
@@ -267,16 +270,16 @@ class _RemindersScreenState extends State<RemindersScreen> {
     );
   }
 
-  String _getRepeatText(ReminderRepeat repeat) {
+  String _getRepeatText(ReminderRepeat repeat, LocalizationService loc) {
     switch (repeat) {
       case ReminderRepeat.daily:
-        return 'Every day';
+        return loc.translate('every_day');
       case ReminderRepeat.weekdays:
-        return 'Weekdays';
+        return loc.translate('weekdays_only');
       case ReminderRepeat.weekends:
-        return 'Weekends';
+        return loc.translate('weekends_only');
       case ReminderRepeat.none:
-        return 'Once';
+        return loc.translate('repeat_once');
     }
   }
 
@@ -300,7 +303,10 @@ class _RemindersScreenState extends State<RemindersScreen> {
               service.deleteReminder(id);
               Navigator.pop(ctx);
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(
+              loc.translate('delete'),
+              style: const TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),
@@ -421,7 +427,10 @@ class _ReminderDialogState extends State<_ReminderDialog> {
               ),
             ),
             const SizedBox(height: 20),
-            Text('Category', style: AppTextStyles.cardTitle),
+            Text(
+              loc.translate('category_label'),
+              style: AppTextStyles.cardTitle,
+            ),
             const SizedBox(height: 8),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -431,9 +440,7 @@ class _ReminderDialogState extends State<_ReminderDialog> {
                       (cat) => Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: ChoiceChip(
-                          label: Text(
-                            cat.name[0].toUpperCase() + cat.name.substring(1),
-                          ),
+                          label: Text(loc.translate('cat_${cat.name}')),
                           selected: _category == cat,
                           onSelected: (selected) {
                             if (selected) setState(() => _category = cat);

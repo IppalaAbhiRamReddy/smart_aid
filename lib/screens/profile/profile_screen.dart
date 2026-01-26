@@ -391,7 +391,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           Text(
-            '${_userModel.age} years old',
+            '${_userModel.age} ${loc.translate('years_old')}',
             style: TextStyle(color: Colors.grey[600]),
           ),
           const SizedBox(height: 20),
@@ -437,7 +437,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 16),
             _buildTextField(
-              'Age',
+              loc.translate('age'),
               _ageController,
               enabled: _isEditing,
               keyboardType: TextInputType.number,
@@ -514,11 +514,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           children: [
             if (_userModel.emergencyContacts.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
-                  'No contacts added yet',
-                  style: TextStyle(color: Colors.grey),
+                  loc.translate('no_contacts_yet'),
+                  style: const TextStyle(color: Colors.grey),
                 ),
               ),
             ..._userModel.emergencyContacts.map(
@@ -565,7 +565,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 items: const [
                   DropdownMenuItem(value: 'en', child: Text('English')),
                   DropdownMenuItem(value: 'te', child: Text('Telugu')),
-                  DropdownMenuItem(value: 'hi', child: Text('Hindi')),
                 ],
                 onChanged: (val) {
                   if (val != null) {

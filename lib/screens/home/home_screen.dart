@@ -437,7 +437,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         _buildActionCard(
           icon: Icons.assignment_ind_outlined,
-          label: "Medical ID",
+          label: loc.translate('medical_id'),
           color: Colors.blue,
           onTap: () => context.go('/profile'),
         ),
@@ -508,7 +508,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     loc.translate('medications'),
                     style: AppTextStyles.cardTitle,
                   ),
-                  Text('Check your reminders', style: AppTextStyles.bodyText),
+                  Text(
+                    loc.translate('check_reminders_subtitle'),
+                    style: AppTextStyles.bodyText,
+                  ),
                 ],
               ),
             ),

@@ -176,10 +176,10 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
   Widget _buildHoldButton(LocalizationService loc) {
     return Column(
       children: [
-        const Text(
-          'Double Tap to Activate SOS',
+        Text(
+          loc.translate('double_tap_sos'),
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white70, fontSize: 16),
+          style: const TextStyle(color: Colors.white70, fontSize: 16),
         ),
         const SizedBox(height: 40),
         GestureDetector(
@@ -227,9 +227,9 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
                       size: 48,
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      'SOS',
-                      style: TextStyle(
+                    Text(
+                      loc.translate('sos_label'),
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -279,10 +279,10 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
           ),
         ),
         const SizedBox(height: 40),
-        const Text(
-          'Double Tap to Mark Safe',
+        Text(
+          loc.translate('double_tap_safe'),
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -363,7 +363,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
               Icon(Icons.phone_in_talk, color: AppColors.error),
               const SizedBox(width: 8),
               Text(
-                'Emergency Services',
+                loc.translate('emergency_services_title'),
                 style: AppTextStyles.cardTitle.copyWith(color: Colors.black87),
               ),
             ],

@@ -69,9 +69,9 @@ class _FirstAidScreenState extends State<FirstAidScreen> {
               loc.translate('first_aid'),
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
             ),
-            const Text(
-              'Find emergency guides quickly',
-              style: TextStyle(
+            Text(
+              loc.translate('fa_subtitle'),
+              style: const TextStyle(
                 fontSize: 13,
                 color: Colors.grey,
                 fontWeight: FontWeight.normal,
@@ -121,7 +121,9 @@ class _FirstAidScreenState extends State<FirstAidScreen> {
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: FilterChip(
-                    label: Text(category),
+                    label: Text(
+                      loc.translate('category_${category.toLowerCase()}'),
+                    ),
                     selected: isSelected,
                     onSelected: (bool selected) {
                       _onCategorySelected(category);
@@ -225,9 +227,9 @@ class _FirstAidScreenState extends State<FirstAidScreen> {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'Tap for instructions',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  Text(
+                    loc.translate('tap_instructions'),
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
               ),

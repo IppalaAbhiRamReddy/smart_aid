@@ -7,6 +7,7 @@ final ThemeData appTheme = ThemeData(
   scaffoldBackgroundColor: AppColors.background,
   primaryColor: AppColors.primaryBlue,
   fontFamily: GoogleFonts.outfit().fontFamily,
+
   textTheme: GoogleFonts.outfitTextTheme().apply(
     bodyColor: AppColors.textPrimary,
     displayColor: AppColors.textPrimary,
@@ -14,21 +15,23 @@ final ThemeData appTheme = ThemeData(
 
   colorScheme: ColorScheme.fromSwatch().copyWith(
     primary: AppColors.primaryBlue,
-    secondary: AppColors.primaryBlue,
+    secondary: AppColors.secondary,
     background: AppColors.background,
     surface: AppColors.surface,
     error: AppColors.error,
+    outline: Colors.grey.shade300,
   ),
 
   appBarTheme: const AppBarTheme(
     backgroundColor: Colors.transparent,
     elevation: 0,
-    centerTitle: false,
+    centerTitle: true,
     iconTheme: IconThemeData(color: AppColors.textPrimary),
     titleTextStyle: TextStyle(
       color: AppColors.textPrimary,
-      fontSize: 22,
-      fontWeight: FontWeight.bold,
+      fontSize: 20,
+      fontWeight: FontWeight.w600,
+      letterSpacing: -0.5,
     ),
   ),
 
@@ -36,7 +39,7 @@ final ThemeData appTheme = ThemeData(
     filled: true,
     fillColor: Colors.white,
     contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-    hintStyle: TextStyle(color: Colors.grey.shade400),
+    hintStyle: TextStyle(color: AppColors.textLight, fontSize: 15),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(16),
       borderSide: BorderSide.none,
@@ -59,18 +62,25 @@ final ThemeData appTheme = ThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: AppColors.primaryBlue,
       foregroundColor: Colors.white,
-      padding: const EdgeInsets.symmetric(vertical: 18),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 4,
       shadowColor: AppColors.primaryBlue.withOpacity(0.4),
-      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      textStyle: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.5,
+      ),
     ),
   ),
 
   cardTheme: CardThemeData(
-    color: Colors.white,
+    color: AppColors.surface,
     elevation: 0,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
     margin: EdgeInsets.zero,
+    clipBehavior: Clip.antiAlias,
   ),
+
+  iconTheme: const IconThemeData(color: AppColors.textSecondary, size: 24),
 );

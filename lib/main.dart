@@ -42,13 +42,21 @@ class SmartAidApp extends StatelessWidget {
           },
         ),
       ],
-      child: Consumer<LocalizationService>(
-        builder: (context, localization, child) {
+      child: Consumer2<LocalizationService, PreferencesService>(
+        builder: (context, localization, prefs, child) {
           return MaterialApp.router(
             title: 'Smart Aid',
             theme: appTheme,
             debugShowCheckedModeBanner: false,
             routerConfig: router,
+            builder: (context, child) {
+              return MediaQuery(
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: TextScaler.linear(prefs.fontSize)),
+                child: child!,
+              );
+            },
           );
         },
       ),

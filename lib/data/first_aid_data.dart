@@ -237,5 +237,81 @@ class FirstAidData {
       dos: ['do_fracture_1', 'do_fracture_2'],
       donts: ['dont_fracture_1', 'dont_fracture_2'],
     ),
+    // 19. Hypothermia
+    FirstAidItem(
+      id: 'hypothermia',
+      titleKey: 'hypothermia_title',
+      iconData: Icons.ac_unit,
+      severity: 'High',
+      category: 'Outdoor',
+      steps: [
+        'step_hypothermia_1',
+        'step_hypothermia_2',
+        'step_hypothermia_3',
+        'step_hypothermia_4',
+      ],
+      dos: ['do_hypothermia_1', 'do_hypothermia_2'],
+      donts: ['dont_hypothermia_1', 'dont_hypothermia_2'],
+    ),
+
+    // 20. Head Injury
+    FirstAidItem(
+      id: 'head_injury',
+      titleKey: 'head_injury_title',
+      iconData: Icons.healing,
+      severity: 'Critical',
+      category: 'Critical',
+      steps: ['step_head_1', 'step_head_2', 'step_head_3', 'step_head_4'],
+      dos: ['do_head_1', 'do_head_2'],
+      donts: ['dont_head_1', 'dont_head_2'],
+    ),
+
+    // 21. Asthma Attack
+    FirstAidItem(
+      id: 'asthma',
+      titleKey: 'asthma_title',
+      iconData: Icons.air,
+      severity: 'High',
+      category: 'Common',
+      steps: ['step_asthma_1', 'step_asthma_2', 'step_asthma_3'],
+      tools: [
+        ToolItem(nameKey: 'tool_inhaler', iconData: Icons.medical_services),
+      ],
+      dos: ['do_asthma_1', 'do_asthma_2'],
+      donts: ['dont_asthma_1'],
+    ),
+
+    // 22. Sprain
+    FirstAidItem(
+      id: 'sprain',
+      titleKey: 'sprain_title',
+      iconData: Icons.accessibility_new,
+      severity: 'Medium',
+      category: 'Common',
+      steps: [
+        'step_sprain_1',
+        'step_sprain_2',
+        'step_sprain_3',
+        'step_sprain_4',
+      ],
+      tools: [
+        ToolItem(nameKey: 'tool_ice_pack', iconData: Icons.ice_skating),
+        ToolItem(nameKey: 'tool_bandage', iconData: Icons.healing),
+      ],
+      dos: ['do_sprain_1', 'do_sprain_2'],
+      donts: ['dont_sprain_1', 'dont_sprain_2'],
+    ),
+
+    // 23. Eye Injury
+    FirstAidItem(
+      id: 'eye_injury',
+      titleKey: 'eye_injury_title',
+      iconData: Icons.visibility,
+      severity: 'Medium',
+      category: 'Common',
+      steps: ['step_eye_1', 'step_eye_2', 'step_eye_3', 'step_eye_4'],
+      dos: ['do_eye_1', 'do_eye_2'],
+      donts: ['dont_eye_1', 'dont_eye_2'],
+    ),
   ];
 }

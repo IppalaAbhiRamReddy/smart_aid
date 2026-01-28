@@ -394,6 +394,21 @@ class _ReminderDialogState extends State<_ReminderDialog> {
                 final t = await showTimePicker(
                   context: context,
                   initialTime: _selectedTime,
+                  helpText: loc.translate('time_picker_select'),
+                  cancelText: loc.translate('cancel'),
+                  confirmText: loc.translate('ok'),
+                  hourLabelText: loc.translate('hour'),
+                  minuteLabelText: loc.translate('minute'),
+                  builder: (context, child) {
+                    return Theme(
+                      data: Theme.of(context).copyWith(
+                        timePickerTheme: TimePickerThemeData(
+                          entryModeIconColor: AppColors.primaryBlue,
+                        ),
+                      ),
+                      child: child!,
+                    );
+                  },
                 );
                 if (t != null) setState(() => _selectedTime = t);
               },

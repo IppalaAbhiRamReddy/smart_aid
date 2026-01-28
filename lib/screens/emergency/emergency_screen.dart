@@ -89,7 +89,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Could not open SMS app')),
+            SnackBar(content: Text(loc.translate('sms_open_error'))),
           );
         }
       }

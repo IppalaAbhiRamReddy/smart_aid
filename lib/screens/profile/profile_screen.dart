@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
@@ -23,7 +22,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   bool _isLoading = true;
   bool _isEditing = false;
-  File? _selectedImage;
 
   late UserModel _userModel;
 
@@ -33,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _medicalConditionsController =
       TextEditingController();
   final TextEditingController _currentMedicationsController =
-      TextEditingController(); // Not in model? Ah, medications might be part of string? Model has 'medicalConditions'
+      TextEditingController();
 
   String _selectedBloodGroup = 'O+';
   bool _notifications = true;
@@ -41,10 +39,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    _optionsLoadUserData();
+
+    final authService = Provider.of<AuthService>(context, listen: false);
+    authService.addListener(_optionsLoadUserData);
   }
 
-  Future<void> _loadUserData() async {
+  @override
+  void dispose() {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    authService.removeListener(_optionsLoadUserData);
+    _nameController.dispose();
+    _ageController.dispose();
+    _allergiesController.dispose();
+    _medicalConditionsController.dispose();
+    _currentMedicationsController.dispose();
+    super.dispose();
+  }
+
+  void _optionsLoadUserData() {
+    if (_isEditing) return;
+
     final user = Provider.of<AuthService>(context, listen: false).userProfile;
     if (user != null) {
       if (mounted) {
@@ -56,42 +71,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _ageController.text = _userModel.age.toString();
           _medicalConditionsController.text =
               _userModel.medicalConditions ?? '';
+          _currentMedicationsController.text =
+              _userModel.currentMedications ?? '';
           _allergiesController.text = _userModel.allergies ?? '';
           _selectedBloodGroup = _userModel.bloodGroup ?? 'O+';
           _notifications = _userModel.preferences.notifications;
-
-          final prefs = Provider.of<PreferencesService>(context, listen: false);
-          // Sync UI with global prefs
         });
       }
-    } else {
-      if (mounted) {
-        setState(() {
-          // Fallback
-          _userModel = UserModel(id: 'guest', name: 'Guest', age: 0, phone: '');
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _pickImage() async {
-    if (!_isEditing) return;
-    final picker = ImagePicker();
-    try {
-      final pickedFile = await picker.pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 50,
-      );
-      if (pickedFile != null) {
-        setState(() {
-          _selectedImage = File(pickedFile.path);
-        });
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
@@ -101,16 +87,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     try {
       final prefs = Provider.of<PreferencesService>(context, listen: false);
+      final authService = Provider.of<AuthService>(context, listen: false);
+      final currentUser = authService.currentUser;
+
+      if (currentUser == null) throw 'No authenticated user found';
 
       final updatedUser = UserModel(
-        id: _userModel.id,
+        id: currentUser.uid,
         name: _nameController.text,
         age: int.tryParse(_ageController.text) ?? _userModel.age,
         phone: _userModel.phone,
         email: _userModel.email,
-        photoUrl: _userModel.photoUrl, // Ideally handle image upload
+        photoUrl: _userModel
+            .photoUrl, // Keep existing URL if any, but we don't change it anymore
         bloodGroup: _selectedBloodGroup,
         medicalConditions: _medicalConditionsController.text,
+        currentMedications: _currentMedicationsController.text,
         allergies: _allergiesController.text,
         emergencyContacts: _userModel.emergencyContacts,
         preferences: UserPreferences(
@@ -122,17 +114,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
         memberSince: _userModel.memberSince,
       );
 
-      await Provider.of<AuthService>(
-        context,
-        listen: false,
-      ).updateProfile(updatedUser);
+      print('DEBUG: Current User ID: ${_userModel.id}');
+      print('DEBUG: Attempting to update profile for ID: ${updatedUser.id}');
+
+      await authService.updateProfile(updatedUser);
 
       if (mounted) {
         setState(() {
           _userModel = updatedUser;
           _isEditing = false;
           _isLoading = false;
-          _selectedImage = null;
         });
         ScaffoldMessenger.of(
           context,
@@ -180,6 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
+        // ... (rest of dialog actions same)
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -208,6 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     photoUrl: _userModel.photoUrl,
                     bloodGroup: _userModel.bloodGroup,
                     medicalConditions: _userModel.medicalConditions,
+                    currentMedications: _userModel.currentMedications,
                     allergies: _userModel.allergies,
                     emergencyContacts: updatedContacts,
                     preferences: _userModel.preferences,
@@ -239,6 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         photoUrl: _userModel.photoUrl,
         bloodGroup: _userModel.bloodGroup,
         medicalConditions: _userModel.medicalConditions,
+        currentMedications: _userModel.currentMedications,
         allergies: _userModel.allergies,
         emergencyContacts: updatedContacts,
         preferences: _userModel.preferences,
@@ -319,13 +313,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileCard(LocalizationService loc) {
-    ImageProvider? backgroundImage;
-    if (_selectedImage != null) {
-      backgroundImage = FileImage(_selectedImage!);
-    } else if (_userModel.photoUrl != null && _userModel.photoUrl!.isNotEmpty) {
-      backgroundImage = NetworkImage(_userModel.photoUrl!);
-    }
-
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -341,49 +328,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: Column(
         children: [
-          GestureDetector(
-            onTap: _pickImage,
-            child: Stack(
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: AppColors.primaryBlue.withOpacity(0.1),
-                  backgroundImage: backgroundImage,
-                  child: backgroundImage == null
-                      ? Text(
-                          _userModel.name.isNotEmpty
-                              ? _userModel.name[0].toUpperCase()
-                              : '?',
-                          style: const TextStyle(
-                            fontSize: 30,
-                            color: AppColors.primaryBlue,
-                          ),
-                        )
-                      : null,
-                ),
-                if (_isEditing)
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: Colors.blue,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
-                        size: 16,
-                      ),
+          CircleAvatar(
+            radius: 40,
+            backgroundColor: AppColors.primaryBlue.withOpacity(0.1),
+            child: _userModel.name.isNotEmpty
+                ? Text(
+                    _userModel.name[0].toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 30,
+                      color: AppColors.primaryBlue,
                     ),
+                  )
+                : const Icon(
+                    Icons.person,
+                    size: 40,
+                    color: AppColors.primaryBlue,
                   ),
-              ],
-            ),
           ),
           const SizedBox(height: 12),
           Text(
-            _userModel.name,
+            _userModel.name.isEmpty ? 'User' : _userModel.name,
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -467,15 +431,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _buildTextField(
               loc.translate('allergies'),
               _allergiesController,
-              maxLines: 2,
+              maxLines: null, // Allow expanding
               enabled: _isEditing,
+              keyboardType: TextInputType.multiline,
             ),
             const SizedBox(height: 16),
             _buildTextField(
               loc.translate('conditions'),
               _medicalConditionsController,
-              maxLines: 2,
+              maxLines: null, // Allow expanding
               enabled: _isEditing,
+              keyboardType: TextInputType.multiline,
+            ),
+            const SizedBox(height: 16),
+            _buildTextField(
+              loc.translate('current_medications'),
+              _currentMedicationsController,
+              maxLines: null, // Allow expanding
+              enabled: _isEditing,
+              keyboardType: TextInputType.multiline,
             ),
           ],
         ),
@@ -486,7 +460,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildTextField(
     String label,
     TextEditingController controller, {
-    int maxLines = 1,
+    int? maxLines = 1,
     bool enabled = true,
     TextInputType? keyboardType,
   }) {

@@ -59,6 +59,7 @@ class UserModel {
   final String? photoUrl;
   final String? bloodGroup;
   final String? medicalConditions; // Comma separated or simple strings for now
+  final String? currentMedications;
   final String? allergies;
   final List<EmergencyContact> emergencyContacts;
   final DateTime? memberSince;
@@ -73,6 +74,7 @@ class UserModel {
     this.photoUrl,
     this.bloodGroup,
     this.medicalConditions,
+    this.currentMedications,
     this.allergies,
     this.emergencyContacts = const [],
     this.memberSince,
@@ -89,6 +91,7 @@ class UserModel {
       'photoUrl': photoUrl,
       'bloodGroup': bloodGroup,
       'medicalConditions': medicalConditions,
+      'currentMedications': currentMedications,
       'allergies': allergies,
       'emergencyContacts': emergencyContacts.map((x) => x.toMap()).toList(),
       'memberSince': memberSince?.toIso8601String(),
@@ -106,6 +109,7 @@ class UserModel {
       photoUrl: map['photoUrl'],
       bloodGroup: map['bloodGroup'],
       medicalConditions: map['medicalConditions'],
+      currentMedications: map['currentMedications'],
       allergies: map['allergies'],
       emergencyContacts: List<EmergencyContact>.from(
         (map['emergencyContacts'] ?? []).map(

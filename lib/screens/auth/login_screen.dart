@@ -55,15 +55,16 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
+        final errorMessage = loc.translate(e.toString());
         showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Error'),
-            content: Text(e.toString()),
+            title: Text(loc.translate('error')),
+            content: Text(errorMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('OK'),
+                child: Text(loc.translate('ok')),
               ),
             ],
           ),
@@ -73,35 +74,36 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _showForgotPasswordDialog() {
+    final loc = Provider.of<LocalizationService>(context, listen: false);
     final TextEditingController resetEmailController = TextEditingController();
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Reset Password'),
+      builder: (dialogContext) => AlertDialog(
+        title: Text(loc.translate('reset_password')),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Enter your email to receive a password reset link.'),
+            Text(loc.translate('reset_password_desc')),
             const SizedBox(height: 16),
             TextField(
               controller: resetEmailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                hintText: 'Email',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                hintText: loc.translate('email'),
+                border: const OutlineInputBorder(),
               ),
             ),
           ],
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(loc.translate('cancel')),
           ),
           ElevatedButton(
             onPressed: () async {
               if (resetEmailController.text.isNotEmpty) {
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
                 try {
                   await _authService.sendPasswordResetEmail(
                     resetEmailController.text.trim(),
@@ -110,14 +112,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     showDialog(
                       context: context,
                       builder: (ctx) => AlertDialog(
-                        title: const Text('Email Sent'),
+                        title: Text(loc.translate('email_sent')),
                         content: Text(
-                          'Password reset instructions have been sent to ${resetEmailController.text.trim()}',
+                          '${loc.translate('password_reset_sent')} ${resetEmailController.text.trim()}',
                         ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(ctx).pop(),
-                            child: const Text('OK'),
+                            child: Text(loc.translate('ok')),
                           ),
                         ],
                       ),
@@ -125,15 +127,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 } catch (e) {
                   if (mounted) {
+                    // Try to translate the error message (it might be a key)
+                    final errorMessage = loc.translate(e.toString());
                     showDialog(
                       context: context,
                       builder: (ctx) => AlertDialog(
-                        title: const Text('Error'),
-                        content: Text('Failed to send email: $e'),
+                        title: Text(loc.translate('error')),
+                        content: Text(errorMessage), // Display translated error
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(ctx).pop(),
-                            child: const Text('OK'),
+                            child: Text(loc.translate('ok')),
                           ),
                         ],
                       ),
@@ -142,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               }
             },
-            child: const Text('Send'),
+            child: Text(loc.translate('send')),
           ),
         ],
       ),
@@ -178,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Welcome Back',
+                  loc.translate('welcome_back'),
                   textAlign: TextAlign.center,
                   style: AppTextStyles.subHeading,
                 ),
@@ -190,27 +194,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Email', style: AppTextStyles.inputLabel),
+                      Text(
+                        loc.translate('email'),
+                        style: AppTextStyles.inputLabel,
+                      ),
                       const SizedBox(height: 8),
                       TextField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         style: AppTextStyles.inputText,
                         decoration: AppStyles.inputDecoration(
-                          hintText: 'Enter your email',
+                          hintText: loc.translate('enter_email'),
                           prefixIcon: const Icon(Icons.email_outlined),
                         ),
                       ),
                       const SizedBox(height: 16),
 
-                      Text('Password', style: AppTextStyles.inputLabel),
+                      Text(
+                        loc.translate('password'),
+                        style: AppTextStyles.inputLabel,
+                      ),
                       const SizedBox(height: 8),
                       TextField(
                         controller: _passwordController,
                         obscureText: !_isPasswordVisible,
                         style: AppTextStyles.inputText,
                         decoration: AppStyles.inputDecoration(
-                          hintText: 'Enter password',
+                          hintText: loc.translate('enter_password'),
                           prefixIcon: const Icon(Icons.lock_outline),
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -231,9 +241,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: _showForgotPasswordDialog,
-                          child: const Text(
-                            'Forgot Password?',
-                            style: TextStyle(
+                          child: Text(
+                            loc.translate('forgot_password'),
+                            style: const TextStyle(
                               color: AppColors.primaryBlue,
                               fontWeight: FontWeight.w600,
                             ),

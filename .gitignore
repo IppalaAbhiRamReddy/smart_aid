@@ -55,3 +55,12 @@ app.*.map.json
 **/ios/Podfile.lock
 
 google-services.json
+
+# Windows
+windows/flutter/ephemeral/
+
+# Linux
+linux/flutter/ephemeral/
+
+# MacOS
+macos/Flutter/ephemeral/

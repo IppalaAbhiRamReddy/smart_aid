@@ -69,6 +69,9 @@ class AuthService extends ChangeNotifier {
   // Password Reset
   Future<void> sendPasswordResetEmail(String email) async {
     try {
+      // Note: firebase_auth v6.0.0+ does not support checking if a user exists
+      // via fetchSignInMethodsForEmail for security reasons (Email Enumeration Protection).
+      // We process the request; if the email exists, they will get a mail.
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
@@ -98,7 +101,11 @@ class AuthService extends ChangeNotifier {
   // Update Profile
   Future<void> updateProfile(UserModel user) async {
     try {
-      await _firestore.collection('users').doc(user.id).update(user.toMap());
+      // Use set with merge: true to handle both update and create-if-missing
+      await _firestore
+          .collection('users')
+          .doc(user.id)
+          .set(user.toMap(), SetOptions(merge: true));
       _userProfile = user;
       notifyListeners();
     } catch (e) {
@@ -127,15 +134,15 @@ class AuthService extends ChangeNotifier {
       case 'user-not-found':
       case 'wrong-password':
       case 'invalid-credential':
-        return 'Invalid credentials';
+        return 'auth_invalid_credentials';
       case 'email-already-in-use':
-        return 'Email is already in use';
+        return 'auth_email_in_use';
       case 'invalid-email':
-        return 'Invalid email address';
+        return 'auth_invalid_email';
       case 'weak-password':
-        return 'Password is too weak';
+        return 'auth_weak_password';
       default:
-        return e.message ?? 'Authentication error occurred';
+        return e.message ?? 'auth_unknown_error';
     }
   }
 }

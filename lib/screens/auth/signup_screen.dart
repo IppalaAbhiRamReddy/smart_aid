@@ -54,21 +54,21 @@ class _SignupScreenState extends State<SignupScreen> {
 
     if (!_emailController.text.contains('@')) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid email')),
+        SnackBar(content: Text(loc.translate('valid_email_error'))),
       );
       return;
     }
 
     if (_passwordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Passwords do not match')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(loc.translate('passwords_do_not_match'))),
+      );
       return;
     }
 
     if (_passwordController.text.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password must be at least 6 characters')),
+        SnackBar(content: Text(loc.translate('password_too_short'))),
       );
       return;
     }
@@ -106,17 +106,15 @@ class _SignupScreenState extends State<SignupScreen> {
             context: context,
             barrierDismissible: false,
             builder: (ctx) => AlertDialog(
-              title: const Text('Account Created'),
-              content: Text(
-                'A verification email has been sent to ${_emailController.text}.\nPlease check your inbox and verify your email.',
-              ),
+              title: Text(loc.translate('account_created')),
+              content: Text(loc.translate('verification_email_sent')),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.of(ctx).pop();
                     context.go('/login');
                   },
-                  child: const Text('Go to Login'),
+                  child: Text(loc.translate('go_to_login')),
                 ),
               ],
             ),
@@ -126,15 +124,16 @@ class _SignupScreenState extends State<SignupScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
+        final errorMessage = loc.translate(e.toString());
         showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Error'),
-            content: Text(e.toString()),
+            title: Text(loc.translate('error')),
+            content: Text(errorMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('OK'),
+                child: Text(loc.translate('ok')),
               ),
             ],
           ),
@@ -215,27 +214,33 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      Text('Email', style: AppTextStyles.inputLabel),
+                      Text(
+                        loc.translate('email'),
+                        style: AppTextStyles.inputLabel,
+                      ),
                       const SizedBox(height: 8),
                       TextField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         style: AppTextStyles.inputText,
                         decoration: AppStyles.inputDecoration(
-                          hintText: 'Enter your email',
+                          hintText: loc.translate('enter_email'),
                           prefixIcon: const Icon(Icons.email_outlined),
                         ),
                       ),
                       const SizedBox(height: 16),
 
-                      Text('Password', style: AppTextStyles.inputLabel),
+                      Text(
+                        loc.translate('password'),
+                        style: AppTextStyles.inputLabel,
+                      ),
                       const SizedBox(height: 8),
                       TextField(
                         controller: _passwordController,
                         obscureText: !_isPasswordVisible,
                         style: AppTextStyles.inputText,
                         decoration: AppStyles.inputDecoration(
-                          hintText: 'Enter password',
+                          hintText: loc.translate('enter_password'),
                           prefixIcon: const Icon(Icons.lock_outline),
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -253,14 +258,17 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      Text('Confirm Password', style: AppTextStyles.inputLabel),
+                      Text(
+                        loc.translate('confirm_password'),
+                        style: AppTextStyles.inputLabel,
+                      ),
                       const SizedBox(height: 8),
                       TextField(
                         controller: _confirmPasswordController,
                         obscureText: !_isConfirmPasswordVisible,
                         style: AppTextStyles.inputText,
                         decoration: AppStyles.inputDecoration(
-                          hintText: 'Confirm password',
+                          hintText: loc.translate('confirm_password'),
                           prefixIcon: const Icon(Icons.lock_outline),
                           suffixIcon: IconButton(
                             icon: Icon(

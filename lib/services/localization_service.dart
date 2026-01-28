@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class LocalizationService extends ChangeNotifier {
-  String _currentLanguage = 'en';
+  String _currentLanguage;
+
+  LocalizationService({String initialLanguage = 'en'})
+    : _currentLanguage = initialLanguage;
 
   String get currentLanguage => _currentLanguage;
 
@@ -34,7 +37,6 @@ class LocalizationService extends ChangeNotifier {
       'enter_age': 'Enter your age',
       'already_user': 'Already have an account?',
       'new_user': 'New User?',
-      'fill_all_fields': 'Please fill all fields',
       'greeting_morning': 'Good Morning',
       'greeting_afternoon': 'Good Afternoon',
       'greeting_evening': 'Good Evening',
@@ -410,6 +412,55 @@ class LocalizationService extends ChangeNotifier {
       'do_this': 'Do This',
       'avoid_this': 'Avoid This',
       'no_tools': 'No specific tools required.',
+
+      // Auth Keys
+      'email': 'Email',
+      'password': 'Password',
+      'confirm_password': 'Confirm Password',
+      'forgot_password': 'Forgot Password?',
+      'reset_password': 'Reset Password',
+      'reset_password_desc':
+          'Enter your email to receive a password reset link.',
+      'enter_email': 'Enter your email',
+      'enter_password': 'Enter password',
+      'welcome_back': 'Welcome Back',
+      'send': 'Send',
+      'email_sent': 'Email Sent',
+      'password_reset_sent': 'Password reset instructions have been sent to',
+      'error': 'Error',
+      'ok': 'OK',
+      'cancel': 'Cancel',
+      'account_created': 'Account Created',
+      'verification_email_sent':
+          'A verification email has been sent to your email. Please check your inbox.',
+      'go_to_login': 'Go to Login',
+      'passwords_do_not_match': 'Passwords do not match',
+      'password_too_short': 'Password must be at least 6 characters',
+      'valid_email_error': 'Please enter a valid email',
+      'fill_all_fields': 'Please fill all fields',
+      'auth_email_not_registered': 'Email is not registered',
+      'auth_user_not_found': 'User not found',
+      'auth_invalid_credentials': 'Invalid credentials',
+      'auth_email_in_use': 'Email is already in use',
+      'auth_invalid_email': 'Invalid email address',
+      'auth_weak_password': 'Password is too weak',
+      'auth_unknown_error': 'Authentication error occurred',
+      'add': 'Add',
+      'guest': 'Guest',
+      'english': 'English',
+      'telugu': 'Telugu',
+      'emergency_mode': 'EMERGENCY',
+      'sos_active_msg': 'SOS Mode Active!',
+      'sos_active_toast': 'S.O.S Mode Active',
+      'did_you_know': 'Did You Know?',
+      'sms_open_error': 'Could not open SMS app',
+
+      'time_picker_select': 'Select Time',
+      'cancel': 'Cancel',
+      'ok': 'OK',
+      'enter_time': 'Enter time',
+      'hour': 'Hour',
+      'minute': 'Minute',
     },
     // Add other languages as needed
     'te': {
@@ -418,13 +469,13 @@ class LocalizationService extends ChangeNotifier {
       'login': 'లాగిన్',
       'signup': 'సైన్ అప్',
       'create_account': 'ఖాతా సృష్టించండి',
-      'full_name': 'పూర్తి పేరు',
+      'current_medications': 'Current Medications',
+      'full_name': 'Full Name',
       'enter_name': 'మీ పూర్తి పేరు నమోదు చేయండి',
       'age': 'వయస్సు',
       'enter_age': 'మీ వయస్సు నమోదు చేయండి',
       'already_user': 'ఖాతా ఉందా?',
       'new_user': 'కొత్త వినియోగదారా?',
-      'fill_all_fields': 'దయచేసి అన్ని వివరాలను సరిగ్గా పూరించండి',
       'greeting_morning': 'శుభోదయం',
       'greeting_afternoon': 'శుభ మధ్యాహ్నం',
       'greeting_evening': 'శుభ సాయంత్రం',
@@ -790,6 +841,64 @@ class LocalizationService extends ChangeNotifier {
       'do_this': 'ఇది చేయండి',
       'avoid_this': 'ఇది నివారించండి',
       'no_tools': 'ప్రత్యేక పరికరాలు అవసరం లేదు.',
+
+      // Auth Keys
+      'email': 'ఈమెయిల్',
+      'password': 'పాస్‌వర్డ్',
+      'confirm_password': 'పాస్‌వర్డ్ నిర్ధారించండి',
+
+      'forgot_password': 'పాస్‌వర్డ్ మర్చిపోయారా?',
+      'reset_password': 'పాస్‌వర్డ్ రీసెట్',
+      'reset_password_desc': 'రీసెట్ లింక్ పొందడానికి మీ ఈమెయిల్ నమోదు చేయండి.',
+
+      'enter_email': 'మీ ఈమెయిల్ నమోదు చేయండి',
+      'enter_password': 'పాస్‌వర్డ్ నమోదు చేయండి',
+
+      'welcome_back': 'తిరిగి స్వాగతం',
+
+      'send': 'పంపండి',
+      'email_sent': 'ఈమెయిల్ పంపబడింది',
+      'password_reset_sent': 'పాస్‌వర్డ్ రీసెట్ సూచనలు పంపబడ్డాయి',
+
+      'error': 'లోపం',
+      'ok': 'సరే',
+      'cancel': 'రద్దు',
+
+      'account_created': 'ఖాతా విజయవంతంగా సృష్టించబడింది',
+      'verification_email_sent':
+          'ధృవీకరణ ఈమెయిల్ పంపబడింది. దయచేసి మీ ఇన్‌బాక్స్‌ను తనిఖీ చేయండి.',
+
+      'go_to_login': 'లాగిన్‌కి వెళ్లండి',
+
+      'passwords_do_not_match': 'పాస్‌వర్డ్‌లు సరిపోలడం లేదు',
+      'password_too_short': 'పాస్‌వర్డ్ కనీసం 6 అక్షరాలు ఉండాలి',
+      'valid_email_error': 'దయచేసి సరైన ఈమెయిల్ నమోదు చేయండి',
+      'fill_all_fields': 'దయచేసి అన్ని వివరాలను పూరించండి',
+
+      'auth_email_not_registered': 'ఈమెయిల్ నమోదు కాలేదు',
+      'auth_user_not_found': 'వినియోగదారు కనుగొనబడలేదు',
+      'auth_invalid_credentials': 'సరికాని లాగిన్ వివరాలు',
+      'auth_email_in_use': 'ఈమెయిల్ ఇప్పటికే వాడుకలో ఉంది',
+      'auth_invalid_email': 'చెల్లని ఈమెయిల్ చిరునామా',
+      'auth_weak_password': 'పాస్‌వర్డ్ చాలా బలహీనంగా ఉంది',
+      'auth_unknown_error': 'ధృవీకరణలో అనుకోని లోపం జరిగింది',
+
+      'emergency_mode': 'అత్యవసర మోడ్',
+
+      'sos_active_msg': 'SOS మోడ్ ప్రస్తుతం సక్రియంగా ఉంది!',
+      'sos_active_toast': 'SOS మోడ్ సక్రియంగా ఉంది',
+
+      'did_you_know': 'మీకు తెలుసా?',
+      'sms_open_error': 'SMS యాప్ తెరవలేకపోయింది',
+
+      'time_picker_select': 'సమయాన్ని ఎంచుకోండి',
+      'enter_time': 'సమయం నమోదు చేయండి',
+
+      'hour': 'గంట',
+      'minute': 'నిమిషం',
+
+      'cancel': 'రద్దు',
+      'ok': 'సరే',
     },
   };
 }

@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 
-import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
 import '../../theme/app_styles.dart';
 import '../../theme/app_colors.dart';
@@ -22,8 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  UserModel? _userModel;
-  bool _isLoading = true;
+  // Fields removed
   bool _isFlashlightOn = false;
   String _currentTipKey = 'tip_1';
   Timer? _sosTimer;
@@ -31,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    // _loadUserData removed, using Consumer in build
     _loadTipOfDay();
   }
 
@@ -88,25 +86,6 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           _currentTipKey = 'tip_$newIndex';
         });
-      }
-    }
-  }
-
-  Future<void> _loadUserData() async {
-    final userData = Provider.of<AuthService>(
-      context,
-      listen: false,
-    ).userProfile;
-    if (userData != null) {
-      if (mounted) {
-        setState(() {
-          _userModel = userData;
-          _isLoading = false;
-        });
-      }
-    } else {
-      if (mounted) {
-        setState(() => _isLoading = false);
       }
     }
   }
@@ -259,77 +238,96 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final loc = Provider.of<LocalizationService>(context);
 
-    if (_isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
-    final userName = _userModel?.name.split(' ').first ?? 'User';
-
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Consumer<AuthService>(
+          builder: (context, authService, child) {
+            final userModel = authService.userProfile;
+            final userName = userModel?.name ?? 'User';
+            final photoUrl = userModel?.photoUrl;
+
+            // Only show loader if we genuinely have no user AND auth state is still determining?
+            // Actually, better to show empty/default state if null, or a skeleton loader.
+            // For now, let's just show the UI with defaults if null, as per existing logic.
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(_getGreeting(loc), style: AppTextStyles.subHeading),
-                      const SizedBox(height: 4),
-                      Text(userName, style: AppTextStyles.heading),
-                    ],
-                  ),
-                  GestureDetector(
-                    onTap: () => context.go('/profile'),
-                    child: CircleAvatar(
-                      radius: 24,
-                      backgroundColor: AppColors.primaryBlue.withOpacity(0.1),
-                      child: Text(
-                        userName.isNotEmpty ? userName[0].toUpperCase() : '?',
-                        style: const TextStyle(
-                          color: AppColors.primaryBlue,
-                          fontWeight: FontWeight.bold,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _getGreeting(loc),
+                            style: AppTextStyles.subHeading,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(userName, style: AppTextStyles.heading),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () => context.go('/profile'),
+                        child: CircleAvatar(
+                          radius: 24,
+                          backgroundColor: AppColors.primaryBlue.withOpacity(
+                            0.1,
+                          ),
+                          backgroundImage:
+                              (photoUrl != null && photoUrl.isNotEmpty)
+                              ? NetworkImage(photoUrl)
+                              : null,
+                          child: (photoUrl == null || photoUrl.isEmpty)
+                              ? Text(
+                                  userName.isNotEmpty
+                                      ? userName[0].toUpperCase()
+                                      : '?',
+                                  style: const TextStyle(
+                                    color: AppColors.primaryBlue,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              : null,
                         ),
                       ),
-                    ),
+                    ],
                   ),
+                  const SizedBox(height: 24),
+
+                  _buildStatusWidget(loc),
+                  const SizedBox(height: 24),
+
+                  Text(
+                    loc.translate('quick_actions'),
+                    style: AppTextStyles.sectionHeader,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildQuickActionsGrid(loc),
+
+                  const SizedBox(height: 24),
+
+                  Text(
+                    loc.translate('next_reminder'),
+                    style: AppTextStyles.sectionHeader,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildReminderCard(loc),
+
+                  const SizedBox(height: 24),
+                  Text(
+                    loc.translate('tip_of_day'),
+                    style: AppTextStyles.sectionHeader,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSafetyTipCard(loc),
                 ],
               ),
-              const SizedBox(height: 24),
-
-              _buildStatusWidget(loc),
-              const SizedBox(height: 24),
-
-              Text(
-                loc.translate('quick_actions'),
-                style: AppTextStyles.sectionHeader,
-              ),
-              const SizedBox(height: 16),
-              _buildQuickActionsGrid(loc),
-
-              const SizedBox(height: 24),
-
-              Text(
-                loc.translate('next_reminder'),
-                style: AppTextStyles.sectionHeader,
-              ),
-              const SizedBox(height: 16),
-              _buildReminderCard(loc),
-
-              const SizedBox(height: 24),
-              Text(
-                loc.translate('tip_of_day'),
-                style: AppTextStyles.sectionHeader,
-              ),
-              const SizedBox(height: 16),
-              _buildSafetyTipCard(loc),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
@@ -390,7 +388,9 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  isSos ? "EMERGENCY" : loc.translate('your_status'),
+                  isSos
+                      ? loc.translate('emergency_mode')
+                      : loc.translate('your_status'),
                   style: GoogleFonts.outfit(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 14,
@@ -401,9 +401,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 6),
                 Text(
                   isSos
-                      ? "SOS Mode Active!"
+                      ? loc.translate('sos_active_msg')
                       : (isSharing
-                            ? "Sharing Live Location"
+                            ? "Sharing Live Location" // Provide translation if needed, or keep hardcoded if not requested
                             : loc.translate('all_systems_normal')),
                   style: GoogleFonts.outfit(
                     color: Colors.white,
@@ -562,7 +562,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Did You Know?",
+                  loc.translate('did_you_know'),
                   style: GoogleFonts.outfit(
                     color: Colors.green.shade800,
                     fontWeight: FontWeight.bold,

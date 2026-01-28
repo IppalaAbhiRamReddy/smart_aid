@@ -8,6 +8,7 @@ import '../../services/auth_service.dart';
 import '../../theme/app_colors.dart';
 import '../../services/localization_service.dart';
 import '../../services/preferences_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -239,6 +240,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         memberSince: _userModel.memberSince,
       );
     });
+  }
+
+  Future<void> _callNumber(String number) async {
+    final Uri launchUri = Uri(scheme: 'tel', path: number);
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not launch dialer for $number')),
+        );
+      }
+    }
   }
 
   @override
@@ -497,6 +511,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ..._userModel.emergencyContacts.map(
               (contact) => ListTile(
+                onTap: _isEditing ? null : () => _callNumber(contact.phone),
                 leading: const Icon(Icons.phone, color: Colors.green),
                 title: Text(contact.name),
                 subtitle: Text(contact.phone),
@@ -505,7 +520,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () => _removeContact(contact.id),
                       )
-                    : null,
+                    : const Icon(Icons.call, color: AppColors.primaryBlue),
               ),
             ),
             if (_isEditing)

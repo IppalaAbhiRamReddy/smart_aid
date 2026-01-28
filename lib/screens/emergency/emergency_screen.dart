@@ -56,28 +56,54 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
         return;
       }
 
-      String locationStr = '';
+      String locationUrl = 'Location unavailable';
       try {
-        Position position = await Geolocator.getCurrentPosition(
-          locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.high,
-          ),
-        );
-        locationStr =
-            ' https://maps.google.com/?q=${position.latitude},${position.longitude}';
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.denied) {
+          permission = await Geolocator.requestPermission();
+        }
+
+        if (permission == LocationPermission.whileInUse ||
+            permission == LocationPermission.always) {
+          Position position = await Geolocator.getCurrentPosition(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high,
+            ),
+          );
+          locationUrl =
+              'https://maps.google.com/?q=${position.latitude},${position.longitude}';
+        }
       } catch (e) {
         debugPrint('Location error: $e');
       }
 
       final loc = Provider.of<LocalizationService>(context, listen: false);
-      final String body = isEmergency
-          ? 'SOS! I need help. My current location is:$locationStr'
-          : '${loc.translate('safe_sms_body')}$locationStr';
+      String body;
+
+      if (isEmergency) {
+        body =
+            '''
+🚨 EMERGENCY ALERT / అత్యవసర హెచ్చరిక 🚨
+
+I am in danger and need immediate help.
+నేను ప్రమాదంలో ఉన్నాను. వెంటనే సహాయం అవసరం.
+
+My current location / నా ప్రస్తుత స్థానం:
+📍 $locationUrl
+
+Please respond immediately or reach this location.
+దయచేసి వెంటనే స్పందించండి లేదా ఈ స్థానానికి రండి.''';
+      } else {
+        body = '${loc.translate('safe_sms_body')} $locationUrl';
+      }
 
       final String recipients = userData.emergencyContacts
           .map((c) => c.phone)
           .join(',');
 
+      // Android requires '?' separator for body, iOS might treat differently but 'sms:number?body=...' is standard uri
+      // 'sms' scheme behavior varies. 'sms:number?body=...' works on most.
+      // For multiple recipients, comma separation is standard on Android.
       final Uri smsUri = Uri(
         scheme: 'sms',
         path: recipients,

@@ -7,6 +7,8 @@ import '../../services/auth_service.dart';
 import '../../models/user_model.dart';
 import '../../services/localization_service.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 

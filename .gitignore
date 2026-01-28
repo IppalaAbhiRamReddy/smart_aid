@@ -53,3 +53,5 @@ app.*.map.json
 **/ios/Pods/
 **/ios/.symlinks/
 **/ios/Podfile.lock
+
+google-services.json

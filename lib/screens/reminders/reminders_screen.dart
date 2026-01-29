@@ -18,9 +18,6 @@ class _RemindersScreenState extends State<RemindersScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ReminderService>(context, listen: false).requestPermissions();
-    });
   }
 
   @override

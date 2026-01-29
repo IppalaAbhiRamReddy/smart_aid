@@ -6,6 +6,10 @@ service cloud.firestore {
     // Users can only read and write their own profile document.
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /reminders/{reminderId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
     
     // General fallback: Deny everything else by default

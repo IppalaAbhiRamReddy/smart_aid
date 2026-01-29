@@ -38,4 +38,30 @@ class Reminder {
       category: category ?? this.category,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'time': '${time.hour}:${time.minute}',
+      'label': label,
+      'enabled': enabled,
+      'repeat': repeat.index,
+      'category': category.index,
+    };
+  }
+
+  factory Reminder.fromMap(Map<String, dynamic> map) {
+    final timeParts = (map['time'] as String).split(':');
+    return Reminder(
+      id: map['id'],
+      time: TimeOfDay(
+        hour: int.parse(timeParts[0]),
+        minute: int.parse(timeParts[1]),
+      ),
+      label: map['label'],
+      enabled: map['enabled'] ?? true,
+      repeat: ReminderRepeat.values[map['repeat'] ?? 0],
+      category: ReminderCategory.values[map['category'] ?? 0],
+    );
+  }
 }

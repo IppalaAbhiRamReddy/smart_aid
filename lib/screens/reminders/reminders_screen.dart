@@ -242,12 +242,6 @@ class _RemindersScreenState extends State<RemindersScreen> {
                 ),
                 Column(
                   children: [
-                    Switch(
-                      value: reminder.enabled,
-                      onChanged: (val) => service.toggleReminder(reminder.id),
-                      activeColor: Colors.white,
-                      activeTrackColor: AppColors.primaryBlue,
-                    ),
                     IconButton(
                       icon: Icon(
                         Icons.delete_outline,
